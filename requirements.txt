@@ -1,0 +1,17 @@
+# SU Chatbot — Python Dependencies
+
+# Web scraping
+requests==2.31.0
+beautifulsoup4==4.12.3
+
+# Embeddings (free, runs locally)
+sentence-transformers==3.0.1
+
+# Vector database
+chromadb==0.5.5
+
+# AI — Groq API (fast, free tier)
+groq==0.9.0
+
+# Chat UI
+streamlit==1.38.0
