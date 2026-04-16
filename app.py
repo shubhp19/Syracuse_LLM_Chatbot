@@ -69,7 +69,10 @@ html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
 # ── Login ──────────────────────────────────────────────────────────────────────
 def show_login():
-    api_key = st.secrets.get("GROQ_API_KEY") or os.environ.get("GROQ_API_KEY")
+    try:
+        api_key = st.secrets["GROQ_API_KEY"]
+    except Exception:
+        api_key = os.environ.get("GROQ_API_KEY")
 
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
