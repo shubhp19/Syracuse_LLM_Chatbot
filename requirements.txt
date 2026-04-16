@@ -1,18 +1,18 @@
 # Web scraping
-requests==2.31.0
-beautifulsoup4==4.12.3
+requests
+beautifulsoup4
 
-# Embeddings — ONNX-based, no PyTorch needed, works on Python 3.14
-fastembed==0.3.6
+# Embeddings — ONNX-based, no PyTorch, Python 3.14 compatible
+fastembed==0.8.0
 
 # Vector database
 chromadb==0.5.5
 
 # AI — Groq API
-groq==0.9.0
+groq
 
-# Chat UI
-streamlit==1.38.0
+# Chat UI — no version pin, gets pillow with Python 3.14 wheels
+streamlit
 
 # Env vars
-python-dotenv==1.0.0
+python-dotenv
