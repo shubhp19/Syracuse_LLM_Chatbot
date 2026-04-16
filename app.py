@@ -91,6 +91,9 @@ def show_login():
         with col_p:
             prof_btn = st.button("👨‍🏫 Professor", use_container_width=True)
 
+        if not api_key:
+            st.error("⚠️ GROQ_API_KEY secret is missing. Go to App Settings → Secrets and add it.")
+
         if student_btn and api_key:
             st.session_state.api_key = api_key
             st.session_state.role = "student"
