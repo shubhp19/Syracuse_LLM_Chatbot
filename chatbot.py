@@ -5,14 +5,14 @@ Full featured: Students + Professors with all capabilities
 
 import chromadb
 from groq import Groq
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 import json
 import os
 from datetime import datetime
 
 CHROMA_DB_PATH  = "./chroma_db"
 COLLECTION_NAME = "su_knowledge"
-EMBED_MODEL     = "all-MiniLM-L6-v2"
+EMBED_MODEL     = "sentence-transformers/all-MiniLM-L6-v2"
 GROQ_MODEL      = "llama-3.3-70b-versatile"
 TOP_K           = 6
 ANNOUNCEMENTS_FILE = "announcements.json"
@@ -122,7 +122,7 @@ class SUChatbot:
         self.announcements = AnnouncementManager()
 
         print("Loading embedding model...")
-        self.embedder = SentenceTransformer(EMBED_MODEL)
+        self.embedder = TextEmbedding(EMBED_MODEL)
 
         print("Connecting to ChromaDB...")
         db = chromadb.PersistentClient(path=CHROMA_DB_PATH)
@@ -136,7 +136,7 @@ class SUChatbot:
         return STUDENT_PROMPT if self.role == "student" else PROFESSOR_PROMPT
 
     def retrieve(self, query: str) -> list[dict]:
-        embedding = self.embedder.encode([query]).tolist()
+        embedding = [list(self.embedder.embed([query]))[0].tolist()]
         results = self.collection.query(
             query_embeddings=embedding,
             n_results=TOP_K,
