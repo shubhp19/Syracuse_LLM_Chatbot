@@ -1,17 +1,21 @@
-# SU Chatbot — Python Dependencies
+--extra-index-url https://download.pytorch.org/whl/cpu
 
 # Web scraping
 requests==2.31.0
 beautifulsoup4==4.12.3
 
-# Embeddings (free, runs locally)
+# Embeddings — CPU-only torch to avoid 2GB GPU download timeout
+torch==2.1.0+cpu
 sentence-transformers==3.0.1
 
 # Vector database
 chromadb==0.5.5
 
-# AI — Groq API (fast, free tier)
+# AI — Groq API
 groq==0.9.0
 
 # Chat UI
 streamlit==1.38.0
+
+# Env vars
+python-dotenv==1.0.0
