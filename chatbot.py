@@ -126,10 +126,51 @@ class SUChatbot:
 
         print("Connecting to ChromaDB...")
         db = chromadb.PersistentClient(path=CHROMA_DB_PATH)
-        self.collection = db.get_collection(COLLECTION_NAME)
-        print(f"✅ Ready [{self.role.upper()} mode] — {self.collection.count()} chunks loaded.")
+        try:
+            self.collection = db.get_collection(COLLECTION_NAME)
+            count = self.collection.count()
+            if count == 0:
+                raise ValueError("Empty collection")
+            print(f"✅ Ready [{self.role.upper()} mode] — {count} chunks loaded.")
+        except Exception as e:
+            print(f"⚠️ Collection not found ({e}), rebuilding from scraped_data.json...")
+            self.collection = self._build_collection(db)
+            print(f"✅ Rebuilt — {self.collection.count()} chunks loaded.")
 
         self.history = []
+
+    def _build_collection(self, db):
+        import re
+        with open("scraped_data.json", "r", encoding="utf-8") as f:
+            pages = json.load(f)
+        try:
+            db.delete_collection(COLLECTION_NAME)
+        except Exception:
+            pass
+        collection = db.create_collection(
+            name=COLLECTION_NAME,
+            metadata={"hnsw:space": "cosine"}
+        )
+        chunk_size, overlap = 600, 120
+        all_docs, all_ids, all_metas = [], [], []
+        for page in pages:
+            url, title, content = page.get("url",""), page.get("title",""), page.get("content","")
+            text = re.sub(r'\n{3,}', '\n\n', f"Page: {title}\nURL: {url}\n\n{content}").strip()
+            start = 0
+            while start < len(text):
+                chunk = text[start:start + chunk_size].strip()
+                if len(chunk) > 60:
+                    all_docs.append(chunk)
+                    all_ids.append(f"{url}__chunk_{len(all_ids)}")
+                    all_metas.append({"url": url, "title": title, "chunk_index": len(all_ids)})
+                start += chunk_size - overlap
+        batch = 128
+        for i in range(0, len(all_docs), batch):
+            b_docs = all_docs[i:i+batch]
+            embeds = [list(self.embedder.embed([d]))[0].tolist() for d in b_docs]
+            collection.add(documents=b_docs, embeddings=embeds,
+                           ids=all_ids[i:i+batch], metadatas=all_metas[i:i+batch])
+        return collection
 
     @property
     def system_prompt(self):
