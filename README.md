@@ -2,6 +2,8 @@
 
 An AI-powered chatbot built to help Syracuse University students get quick, accurate answers to common questions — without having to dig through multiple websites or wait for a response from staff.
 
+Here is for anyone who want to access SU Chatbot: https://syracusellmchatbot-su.streamlit.app/
+
 ## The Problem
 
 Students at Syracuse University often struggle to find information about:
