@@ -4,7 +4,7 @@
 requests==2.31.0
 beautifulsoup4==4.12.3
 
-# Embeddings — CPU-only torch to avoid 2GB GPU download timeout
+# Embeddings — CPU-only torch
 torch==2.1.0+cpu
 sentence-transformers==3.0.1
 
